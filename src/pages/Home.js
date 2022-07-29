@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Parameters from "../components/Parameters";
+import axios from "axios";
 
 const Home = () => {
   const [paramsCount, setParamsCount] = useState(0);
   const [activeParam, setActiveParam] = useState("Query Params");
+  const [url, setUrl] = useState("");
+  const [method, setMethod] = useState("GET");
 
   const activeClass = "text-gray-600";
   const inactiveClass = "text-blue-600";
@@ -17,12 +20,23 @@ const Home = () => {
     setActiveParam(val);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios({
+      url,
+      method,
+    }).then((res) => {
+      console.log(res.data);
+    });
+  };
+
   return (
     <div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="mb-4 flex">
           <select
-            defaultValue="GET"
+            value={method}
+            onChange={(e) => setMethod(e.target.value)}
             className="flex flex-grow-0 w-auto border-[1px] py-2 px-1 outline-0"
           >
             <option value="GET">GET</option>
@@ -32,9 +46,11 @@ const Home = () => {
             <option value="DELETE">DELETE</option>
           </select>
           <input
+            onChange={(e) => setUrl(e.target.value)}
+            value={url}
             className="w-[400px] pl-1 outline-0 border-[1px]"
             required
-            type="url"
+            type="text"
             placeholder="http://example.com"
           />
           <button
