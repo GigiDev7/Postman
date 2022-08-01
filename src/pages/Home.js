@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import Parameters from "../components/Parameters";
 import axios from "axios";
 import Results from "../components/Results";
+import prettyBytes from "pretty-bytes";
 
 const Home = () => {
   const [params, setParams] = useState([]);
@@ -52,16 +53,46 @@ const Home = () => {
       headersObj[item.headerKey] = item.headerVal;
     }
 
+    axios.interceptors.request.use((request) => {
+      request.metadata = request.metadata || {};
+      request.metadata.startTime = new Date().getTime();
+      return request;
+    });
+
+    axios.interceptors.response.use((response) => {
+      response.metadata = response.metadata || {};
+      response.config.metadata.endTime = new Date().getTime();
+      response.duration =
+        response.config.metadata.endTime - response.config.metadata.startTime;
+      return response;
+    });
+
     axios({
       url,
       method,
       headers: headersObj,
       //params: paramsObj,
-    }).then((res) => {
-      setResult(res.data);
-      setResponseHeaders(res.headers);
-      console.log(res.headers);
-    });
+    })
+      .then((res) => {
+        setResult(res.data);
+        setResponseHeaders(res.headers);
+        setResponseDetails({
+          status: res.status,
+          time: res.duration,
+          size: prettyBytes(
+            JSON.stringify(res.data).length + JSON.stringify(res.headers).length
+          ),
+        });
+      })
+      .catch((err) => {
+        setResult("Error");
+        setHeaders(err.response.headers);
+        setResponseDetails({
+          status: err.response.status,
+          time: new Date().getTime() - err.response.config.metadata.startTime,
+          size: "0B",
+        });
+      });
   };
 
   return (

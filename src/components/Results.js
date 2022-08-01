@@ -11,17 +11,17 @@ const Results = ({ data, responseDetails, responseHeaders }) => {
   };
 
   return (
-    <div className="mt-12">
+    <div className="mt-12 mb-8">
       <h3 className="font-semibold">Response</h3>
       <div className="flex gap-5 mt-3 text-[15px]">
         <div>
-          Status: <span>200</span>
+          Status: <span>{responseDetails.status}</span>
         </div>
         <div>
-          Time: <span>ms</span>
+          Time: <span>{responseDetails.time}ms</span>
         </div>
         <div>
-          Size: <span>150B</span>
+          Size: <span>{responseDetails.size}</span>
         </div>
       </div>
 
