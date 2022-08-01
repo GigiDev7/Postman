@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import Editor from "@monaco-editor/react";
+
 const Results = ({ data, responseDetails, responseHeaders }) => {
   const [activeParam, setActiveParam] = useState("Body");
 
@@ -59,6 +61,16 @@ const Results = ({ data, responseDetails, responseHeaders }) => {
             </div>
           ))}
         </div>
+      )}
+
+      {activeParam === "Body" && (
+        <Editor
+          height="200px"
+          defaultLanguage="json"
+          defaultValue="{}"
+          value={JSON.stringify(data)}
+          options={{ readOnly: true }}
+        />
       )}
     </div>
   );

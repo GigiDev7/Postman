@@ -4,10 +4,12 @@ import Parameters from "../components/Parameters";
 import axios from "axios";
 import Results from "../components/Results";
 import prettyBytes from "pretty-bytes";
+import Editor from "@monaco-editor/react";
 
 const Home = () => {
   const [params, setParams] = useState([]);
   const [headers, setHeaders] = useState([]);
+  const [requestBody, setRequestBody] = useState(null);
   const [activeParam, setActiveParam] = useState("Query Params");
   const [url, setUrl] = useState("");
   const [method, setMethod] = useState("GET");
@@ -71,6 +73,7 @@ const Home = () => {
       url,
       method,
       headers: headersObj,
+      data: JSON.parse(requestBody),
       //params: paramsObj,
     })
       .then((res) => {
@@ -186,13 +189,24 @@ const Home = () => {
             />
           ))}
 
-        <button
-          onClick={onAddClick}
-          className="mt-8 text-green-500 border-green-500 border-[1px] px-4 py-1 rounded font-semibold"
-          type="button"
-        >
-          Add
-        </button>
+        {activeParam === "JSON" && (
+          <Editor
+            onChange={(val) => setRequestBody(val)}
+            language="json"
+            defaultValue="{}"
+            height="150px"
+          />
+        )}
+
+        {activeParam !== "JSON" && (
+          <button
+            onClick={onAddClick}
+            className="mt-8 text-green-500 border-green-500 border-[1px] px-4 py-1 rounded font-semibold"
+            type="button"
+          >
+            Add
+          </button>
+        )}
       </form>
 
       {result && (
