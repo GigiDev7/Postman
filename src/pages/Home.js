@@ -4,7 +4,8 @@ import Parameters from "../components/Parameters";
 import axios from "axios";
 
 const Home = () => {
-  const [paramsCount, setParamsCount] = useState(0);
+  const [params, setParams] = useState([]);
+  const [headers, setHeaders] = useState([]);
   const [activeParam, setActiveParam] = useState("Query Params");
   const [url, setUrl] = useState("");
   const [method, setMethod] = useState("GET");
@@ -13,7 +14,17 @@ const Home = () => {
   const inactiveClass = "text-blue-600";
 
   const onAddClick = () => {
-    setParamsCount((prevCount) => (prevCount += 1));
+    if (activeParam === "Query Params") {
+      setParams((prevCount) => {
+        const id = uuidv4();
+        return [...prevCount, { id, paramKey: "", paramVal: "" }];
+      });
+    } else if (activeParam === "Headers") {
+      setHeaders((prevHeaders) => {
+        const id = uuidv4();
+        return [...prevHeaders, { id, headerKey: "", headerVal: "" }];
+      });
+    }
   };
 
   const onActiveParamChange = (val) => {
@@ -22,9 +33,25 @@ const Home = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    /*  let paramsObj = {};
+
+    const myUrl = new URL(url);
+    for (const [key, value] of myUrl.searchParams.entries()) {
+      paramsObj[key] = value;
+    } */
+
+    let headersObj = {};
+
+    for (let item of headers) {
+      headersObj[item.headerKey] = item.headerVal;
+    }
+
     axios({
       url,
       method,
+      headers: headersObj,
+      //params: paramsObj,
     }).then((res) => {
       console.log(res.data);
     });
@@ -97,9 +124,29 @@ const Home = () => {
           </ul>
         </div>
 
-        {[...Array(paramsCount)].map((item) => (
-          <Parameters setParamsCount={setParamsCount} key={uuidv4()} />
-        ))}
+        {activeParam === "Query Params" &&
+          params.map((item) => (
+            <Parameters
+              {...item}
+              key={item.id}
+              setUrl={setUrl}
+              url={url}
+              params={params}
+              setParams={setParams}
+              activeParam={activeParam}
+            />
+          ))}
+
+        {activeParam === "Headers" &&
+          headers.map((item) => (
+            <Parameters
+              {...item}
+              key={item.id}
+              headers={headers}
+              setHeaders={setHeaders}
+              activeParam={activeParam}
+            />
+          ))}
 
         <button
           onClick={onAddClick}
