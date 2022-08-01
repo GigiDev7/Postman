@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Parameters from "../components/Parameters";
 import axios from "axios";
+import Results from "../components/Results";
 
 const Home = () => {
   const [params, setParams] = useState([]);
@@ -9,6 +10,8 @@ const Home = () => {
   const [activeParam, setActiveParam] = useState("Query Params");
   const [url, setUrl] = useState("");
   const [method, setMethod] = useState("GET");
+
+  const [result, setResult] = useState(null);
 
   const activeClass = "text-gray-600";
   const inactiveClass = "text-blue-600";
@@ -156,6 +159,8 @@ const Home = () => {
           Add
         </button>
       </form>
+
+      <Results />
     </div>
   );
 };
