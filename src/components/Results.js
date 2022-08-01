@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Results = () => {
+const Results = ({ data, responseDetails, responseHeaders }) => {
   const [activeParam, setActiveParam] = useState("Body");
 
   const activeClass = "text-gray-600";
@@ -49,6 +49,17 @@ const Results = () => {
           </li>
         </ul>
       </div>
+
+      {responseHeaders !== null && activeParam === "Headers" && (
+        <div className="border-[1px] border-gray-200 py-2 pl-1">
+          {Object.entries(responseHeaders).map((item) => (
+            <div className="flex mt-2" key={item[0]}>
+              <p className="w-[40%]">{item[0]}</p>
+              <p className="w-[40%]">{item[1]}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

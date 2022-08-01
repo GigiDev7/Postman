@@ -12,6 +12,8 @@ const Home = () => {
   const [method, setMethod] = useState("GET");
 
   const [result, setResult] = useState(null);
+  const [responseDetails, setResponseDetails] = useState(null);
+  const [responseHeaders, setResponseHeaders] = useState(null);
 
   const activeClass = "text-gray-600";
   const inactiveClass = "text-blue-600";
@@ -56,7 +58,9 @@ const Home = () => {
       headers: headersObj,
       //params: paramsObj,
     }).then((res) => {
-      console.log(res.data);
+      setResult(res.data);
+      setResponseHeaders(res.headers);
+      console.log(res.headers);
     });
   };
 
@@ -160,7 +164,13 @@ const Home = () => {
         </button>
       </form>
 
-      <Results />
+      {result && (
+        <Results
+          data={result}
+          responseDetails={responseDetails}
+          responseHeaders={responseHeaders}
+        />
+      )}
     </div>
   );
 };
