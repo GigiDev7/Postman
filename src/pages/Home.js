@@ -86,7 +86,7 @@ const Home = () => {
       })
       .catch((err) => {
         setResult("Error");
-        setHeaders(err.response.headers);
+        setResponseHeaders(err.response.headers);
         setResponseDetails({
           status: err.response.status,
           time: new Date().getTime() - err.response.config.metadata.startTime,
